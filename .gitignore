@@ -3,3 +3,6 @@
 .env
 appsettings.Development.json
 /.vscode/settings.json
+/venv
+/.idea
+__pycache__
