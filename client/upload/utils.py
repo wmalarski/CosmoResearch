@@ -11,16 +11,15 @@ _dtype_mapping: Dict[str, Tuple[int, str]] = {
 }
 
 
-def _build_kwargs(path: Path, key: str, value: Any) -> Optional[dataUpload_pb2.DataRequest]:
+def _build_request(path: Path, key: str, value: Any) -> Optional[dataUpload_pb2.DataRequest]:
     value_array = value if isinstance(value, list) else [value]
-    mapping = _dtype_mapping.get(type(value_array[0]))
+    mapping = _dtype_mapping.get(type(value_array[0]).__name__)
     if mapping is None:
         return None
     dtype, data_key = mapping
-
-    kwargs = {
+    return dataUpload_pb2.DataRequest(**{
         "path": str(path),
-        key: key,
+        "key": key,
         "dtype": dtype,
         "dim": len(value_array),
         "stringData": [],
@@ -28,8 +27,7 @@ def _build_kwargs(path: Path, key: str, value: Any) -> Optional[dataUpload_pb2.D
         "int64Data": [],
         "double32Data": [],
         data_key: value_array
-    }
-    return dataUpload_pb2.DataRequest(**kwargs)
+    })
 
 
 def _flatten_dict(path: Path, parent_key: str, data_dict: Dict) -> Iterator[dataUpload_pb2.DataRequest]:
@@ -38,7 +36,9 @@ def _flatten_dict(path: Path, parent_key: str, data_dict: Dict) -> Iterator[data
         if isinstance(value, dict):
             yield from _flatten_dict(path, child_key, value)
         else:
-            yield _build_kwargs(path, child_key, value)
+            request = _build_request(path, child_key, value)
+            if request is not None:
+                yield request
 
 
 def load_data(path: Path) -> Iterator[dataUpload_pb2.DataRequest]:
@@ -55,5 +55,4 @@ def load_data(path: Path) -> Iterator[dataUpload_pb2.DataRequest]:
             }
         }
     }
-    result = _flatten_dict(path, "", mock_data)
-    return result
+    return _flatten_dict(path, "", mock_data)

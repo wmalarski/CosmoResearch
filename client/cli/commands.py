@@ -38,8 +38,8 @@ def types() -> None:
             file.truncate()
 
 
-@cli.command("client")
-def client() -> None:
+@cli.command("run")
+def run() -> None:
     logging.basicConfig()
     channel = 'localhost:5000'
     path = Path(__file__)

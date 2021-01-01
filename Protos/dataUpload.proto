@@ -27,5 +27,5 @@ message DataRequest {
 }
 
 message DataReply {
-  string success = 1;
+  bool success = 1;
 }
