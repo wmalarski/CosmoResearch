@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option csharp_namespace = "CosmoResearch";
+
+package dataUpload;
+
+service DataUpload {
+  rpc SendData (stream DataRequest) returns (DataReply);
+}
+
+enum DataDType {
+  String = 0;
+  Int32 = 1;
+  Int64 = 2;
+  Double = 3;
+}
+
+message DataRequest {
+  string path = 1;
+  string key = 2;
+  DataDType dtype = 3;
+  uint32 dim = 4;
+  repeated string stringData = 5;
+  repeated int32 int32Data = 6;
+  repeated int64 int64Data = 7;
+  repeated double double32Data = 8;
+}
+
+message DataReply {
+  string success = 1;
+}
