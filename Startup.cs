@@ -29,6 +29,9 @@ namespace CosmoResearch
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureTableDb(services);
+
+            services.AddSingleton<TableService>();
+
             services.AddGrpc();
         }
 
@@ -64,7 +67,7 @@ namespace CosmoResearch
             );
 
             services.AddSingleton<CloudTable>(sp => 
-                DatabaseUtils.CreateTable(sp.GetService<DatabaseSettings>())
+                DatabaseUtils.CreateTable(section.Get<DatabaseSettings>())
             );
             
         }

@@ -18,8 +18,8 @@ enum DataDType {
 message DataRequest {
   string path = 1;
   string key = 2;
-  DataDType dtype = 3;
-  uint32 dim = 4;
+  DataDType dataType = 3;
+  repeated uint32 dim = 4;
   repeated string stringData = 5;
   repeated int32 int32Data = 6;
   repeated int64 int64Data = 7;

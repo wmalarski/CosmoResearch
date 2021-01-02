@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'\252\002\rCosmoResearch',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10\x64\x61taUpload.proto\x12\ndataUpload\"\xab\x01\n\x0b\x44\x61taRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\x12$\n\x05\x64type\x18\x03 \x01(\x0e\x32\x15.dataUpload.DataDType\x12\x0b\n\x03\x64im\x18\x04 \x01(\r\x12\x12\n\nstringData\x18\x05 \x03(\t\x12\x11\n\tint32Data\x18\x06 \x03(\x05\x12\x11\n\tint64Data\x18\x07 \x03(\x03\x12\x14\n\x0c\x64ouble32Data\x18\x08 \x03(\x01\"\x1c\n\tDataReply\x12\x0f\n\x07success\x18\x01 \x01(\t*9\n\tDataDType\x12\n\n\x06String\x10\x00\x12\t\n\x05Int32\x10\x01\x12\t\n\x05Int64\x10\x02\x12\n\n\x06\x44ouble\x10\x03\x32J\n\nDataUpload\x12<\n\x08SendData\x12\x17.dataUpload.DataRequest\x1a\x15.dataUpload.DataReply(\x01\x42\x10\xaa\x02\rCosmoResearchb\x06proto3'
+  serialized_pb=b'\n\x10\x64\x61taUpload.proto\x12\ndataUpload\"\xae\x01\n\x0b\x44\x61taRequest\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x0b\n\x03key\x18\x02 \x01(\t\x12\'\n\x08\x64\x61taType\x18\x03 \x01(\x0e\x32\x15.dataUpload.DataDType\x12\x0b\n\x03\x64im\x18\x04 \x03(\r\x12\x12\n\nstringData\x18\x05 \x03(\t\x12\x11\n\tint32Data\x18\x06 \x03(\x05\x12\x11\n\tint64Data\x18\x07 \x03(\x03\x12\x14\n\x0c\x64ouble32Data\x18\x08 \x03(\x01\"\x1c\n\tDataReply\x12\x0f\n\x07success\x18\x01 \x01(\x08*9\n\tDataDType\x12\n\n\x06String\x10\x00\x12\t\n\x05Int32\x10\x01\x12\t\n\x05Int64\x10\x02\x12\n\n\x06\x44ouble\x10\x03\x32J\n\nDataUpload\x12<\n\x08SendData\x12\x17.dataUpload.DataRequest\x1a\x15.dataUpload.DataReply(\x01\x42\x10\xaa\x02\rCosmoResearchb\x06proto3'
 )
 
 _DATADTYPE = _descriptor.EnumDescriptor(
@@ -53,8 +53,8 @@ _DATADTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=236,
-  serialized_end=293,
+  serialized_start=239,
+  serialized_end=296,
 )
 _sym_db.RegisterEnumDescriptor(_DATADTYPE)
 
@@ -89,7 +89,7 @@ _DATAREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='dtype', full_name='dataUpload.DataRequest.dtype', index=2,
+      name='dataType', full_name='dataUpload.DataRequest.dataType', index=2,
       number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -97,8 +97,8 @@ _DATAREQUEST = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
       name='dim', full_name='dataUpload.DataRequest.dim', index=3,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
+      number=4, type=13, cpp_type=3, label=3,
+      has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -143,7 +143,7 @@ _DATAREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=33,
-  serialized_end=204,
+  serialized_end=207,
 )
 
 
@@ -157,8 +157,8 @@ _DATAREPLY = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='success', full_name='dataUpload.DataReply.success', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
+      number=1, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -174,11 +174,11 @@ _DATAREPLY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=206,
-  serialized_end=234,
+  serialized_start=209,
+  serialized_end=237,
 )
 
-_DATAREQUEST.fields_by_name['dtype'].enum_type = _DATADTYPE
+_DATAREQUEST.fields_by_name['dataType'].enum_type = _DATADTYPE
 DESCRIPTOR.message_types_by_name['DataRequest'] = _DATAREQUEST
 DESCRIPTOR.message_types_by_name['DataReply'] = _DATAREPLY
 DESCRIPTOR.enum_types_by_name['DataDType'] = _DATADTYPE
@@ -208,8 +208,8 @@ _DATAUPLOAD = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=295,
-  serialized_end=369,
+  serialized_start=298,
+  serialized_end=372,
   methods=[
   _descriptor.MethodDescriptor(
     name='SendData',

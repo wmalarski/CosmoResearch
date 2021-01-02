@@ -24,13 +24,15 @@ namespace CosmoResearch.Models
             RowKey = key;
         }
 
-        public int[] Size { get; set; }
+        public uint[] Size { get; set; }
 
         public NodeType Type { get; set; }
 
         public string[] StringData { get; set; }
 
         public int[] IntData { get; set; }
+
+        public long[] LongData { get; set; }
 
         public double[] DoubleData { get; set; }        
     }
