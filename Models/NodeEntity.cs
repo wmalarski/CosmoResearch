@@ -10,6 +10,11 @@ namespace CosmoResearch.Models
         Int64 = 2,
         Double = 3,
     }
+
+    public record NodeKey(
+        string path, 
+        string key
+    );
     
     public class NodeEntity: TableEntity
     {

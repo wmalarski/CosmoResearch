@@ -10,6 +10,9 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.32.0" />
+    <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.0" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.0.2" />
+    <PackageReference Include="HotChocolate.Data" Version="11.0.2" />
     <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
   </ItemGroup>
 

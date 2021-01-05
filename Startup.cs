@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +8,7 @@ using CosmoResearch.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.Cosmos.Table;
+using CosmoResearch.GraphQL.Node;
 
 namespace CosmoResearch
 {
@@ -33,6 +30,12 @@ namespace CosmoResearch
             services.AddSingleton<TableService>();
 
             services.AddGrpc();
+
+            services
+                .AddGraphQLServer()
+                .AddQueryType(d => d.Name("Query"))
+                    .AddTypeExtension<NodeQuery>()
+                .AddDataLoader<NodeByKeyDataLoader>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,10 +52,7 @@ namespace CosmoResearch
             {
                 endpoints.MapGrpcService<DataUploadService>();
 
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-                });
+                endpoints.MapGraphQL();
             });
         }
 

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CosmoResearch.Models;
 using Microsoft.Azure.Cosmos.Table;
@@ -38,18 +40,27 @@ namespace CosmoResearch.Services
 
         }
 
-        public async Task<NodeEntity> RetrieveEntityUsingPointQueryAsync(string partitionKey, string rowKey)
+        public async Task<NodeEntity> RetrieveAsync(NodeKey key)
         {
-            TableOperation retrieveOperation = TableOperation.Retrieve<NodeEntity>(partitionKey, rowKey);
-            TableResult result = await _cloudTable.ExecuteAsync(retrieveOperation);
-            NodeEntity node = result.Result as NodeEntity;
+            var result = await _cloudTable.ExecuteAsync(
+                TableOperation.Retrieve<NodeEntity>(key.path, key.key)
+            );
+            
+            return result.Result as NodeEntity;
+        }
 
-            if (result.RequestCharge.HasValue)
+        public async Task<IEnumerable<NodeEntity>> RetrieveAsync(IReadOnlyList<NodeKey> keys)
+        {
+            var batchOperation = new TableBatchOperation();
+
+            foreach (var key in keys)
             {
-                Console.WriteLine("Request Charge of Retrieve Operation: " + result.RequestCharge);
-            }
+                batchOperation.Retrieve<NodeEntity>(key.path, key.key);
+            };
 
-            return node;
+            var results = await _cloudTable.ExecuteBatchAsync(batchOperation);
+
+            return results.Select(result => result.Result as NodeEntity);
         }
 
         public async Task DeleteEntityAsync(NodeEntity deleteEntity)
