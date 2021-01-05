@@ -29,13 +29,13 @@ namespace CosmoResearch
 
             services.AddSingleton<TableService>();
 
-            services.AddGrpc();
-
             services
                 .AddGraphQLServer()
                 .AddQueryType(d => d.Name("Query"))
                     .AddTypeExtension<NodeQuery>()
                 .AddDataLoader<NodeByKeyDataLoader>();
+
+            services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,13 +46,14 @@ namespace CosmoResearch
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<DataUploadService>();
-
                 endpoints.MapGraphQL();
+
+                endpoints.MapGrpcService<DataUploadService>();
             });
         }
 

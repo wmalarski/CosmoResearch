@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace CosmoResearch
@@ -21,7 +22,16 @@ namespace CosmoResearch
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(options => 
+                    {
+                        // https://github.com/bchen04/aspnetcore-grpc-rest/blob/master/aspnetapp/Program.cs
+                        options.ListenAnyIP(4999, listenOptions => 
+                            listenOptions.Protocols = HttpProtocols.Http1);
+
+                        options.ListenAnyIP(5000, listenOptions => 
+                            listenOptions.Protocols = HttpProtocols.Http2);
+                    })
+                    .UseStartup<Startup>();
                 });
     }
 }
