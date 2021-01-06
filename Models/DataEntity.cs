@@ -29,7 +29,7 @@ namespace CosmoResearch.Models
             RowKey = key;
         }
 
-        public uint[] Size { get; set; }
+        public int[] Size { get; set; }
 
         public DataType Type { get; set; }
 

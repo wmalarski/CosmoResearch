@@ -38,7 +38,7 @@ namespace CosmoResearch.Services
                     IntData = message.Int32Data.ToArray(),
                     LongData = message.Int64Data.ToArray(),
                     StringData = message.StringData.ToArray(),
-                    Size = message.Dim.ToArray(),
+                    Size = message.Dim.Select(n => Convert.ToInt32(n)).ToArray(),
                     Type = nodeType,
                 };
 

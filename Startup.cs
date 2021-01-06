@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.Cosmos.Table;
 using CosmoResearch.GraphQL.Data;
+using HotChocolate.Types.Descriptors;
+using CosmoResearch.GraphQL.Common;
 
 namespace CosmoResearch
 {
@@ -28,11 +30,14 @@ namespace CosmoResearch
 
             services.AddSingleton<DataService>();
 
+            services.AddSingleton<ITypeInspector, InheritanceAwareTypeInspector>();
+
             services
                 .AddGraphQLServer()
                 .AddQueryType(d => d.Name("Query"))
                     .AddTypeExtension<DataQuery>()
-                .AddDataLoader<DataByKeyDataLoader>();
+                .AddDataLoader<DataByKeyDataLoader>()
+                .AddType<DataType>();
 
             services.AddGrpc();
         }
