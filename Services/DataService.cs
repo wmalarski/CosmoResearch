@@ -7,17 +7,17 @@ using Microsoft.Azure.Cosmos.Table;
 
 namespace CosmoResearch.Services
 {
-    public class TableService
+    public class DataService
     {
 
         private readonly CloudTable _cloudTable;
 
-        public TableService(CloudTable cloudTable)
+        public DataService(CloudTable cloudTable)
         {
             _cloudTable = cloudTable;
         }
 
-        public async Task<NodeEntity> InsertOrMergeEntityAsync(NodeEntity entity)
+        public async Task<DataEntity> InsertOrMergeEntityAsync(DataEntity entity)
         {
             if (entity == null)
             {
@@ -29,7 +29,7 @@ namespace CosmoResearch.Services
 
             // Execute the operation.
             TableResult result = await _cloudTable.ExecuteAsync(insertOrMergeOperation);
-            NodeEntity insertedNode = result.Result as NodeEntity;
+            DataEntity insertedNode = result.Result as DataEntity;
 
             if (result.RequestCharge.HasValue)
             {
@@ -40,30 +40,30 @@ namespace CosmoResearch.Services
 
         }
 
-        public async Task<NodeEntity> RetrieveAsync(NodeKey key)
+        public async Task<DataEntity> RetrieveAsync(DataKey key)
         {
             var result = await _cloudTable.ExecuteAsync(
-                TableOperation.Retrieve<NodeEntity>(key.path, key.key)
+                TableOperation.Retrieve<DataEntity>(key.path, key.key)
             );
             
-            return result.Result as NodeEntity;
+            return result.Result as DataEntity;
         }
 
-        public async Task<IEnumerable<NodeEntity>> RetrieveAsync(IReadOnlyList<NodeKey> keys)
+        public async Task<IEnumerable<DataEntity>> RetrieveAsync(IReadOnlyList<DataKey> keys)
         {
             var batchOperation = new TableBatchOperation();
 
             foreach (var key in keys)
             {
-                batchOperation.Retrieve<NodeEntity>(key.path, key.key);
+                batchOperation.Retrieve<DataEntity>(key.path, key.key);
             };
 
             var results = await _cloudTable.ExecuteBatchAsync(batchOperation);
 
-            return results.Select(result => result.Result as NodeEntity);
+            return results.Select(result => result.Result as DataEntity);
         }
 
-        public async Task DeleteEntityAsync(NodeEntity deleteEntity)
+        public async Task DeleteEntityAsync(DataEntity deleteEntity)
         {
             if (deleteEntity == null)
             {

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CosmoResearch.Services;
@@ -8,7 +7,7 @@ using CosmoResearch.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Azure.Cosmos.Table;
-using CosmoResearch.GraphQL.Node;
+using CosmoResearch.GraphQL.Data;
 
 namespace CosmoResearch
 {
@@ -27,13 +26,13 @@ namespace CosmoResearch
         {
             ConfigureTableDb(services);
 
-            services.AddSingleton<TableService>();
+            services.AddSingleton<DataService>();
 
             services
                 .AddGraphQLServer()
                 .AddQueryType(d => d.Name("Query"))
-                    .AddTypeExtension<NodeQuery>()
-                .AddDataLoader<NodeByKeyDataLoader>();
+                    .AddTypeExtension<DataQuery>()
+                .AddDataLoader<DataByKeyDataLoader>();
 
             services.AddGrpc();
         }

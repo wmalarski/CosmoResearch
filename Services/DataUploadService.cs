@@ -12,9 +12,9 @@ namespace CosmoResearch.Services
     {
         private readonly ILogger<DataUploadService> _logger;
 
-        private readonly TableService _tableService;
+        private readonly DataService _tableService;
 
-        public DataUploadService(ILogger<DataUploadService> logger, TableService tableService)
+        public DataUploadService(ILogger<DataUploadService> logger, DataService tableService)
         {
             _logger = logger;
             _tableService = tableService;
@@ -24,7 +24,7 @@ namespace CosmoResearch.Services
             IAsyncStreamReader<DataRequest> requestStream,
             ServerCallContext context)
         {
-            var taskList = new List<Task<NodeEntity>>();
+            var taskList = new List<Task<DataEntity>>();
 
             while (await requestStream.MoveNext())
             {
@@ -32,7 +32,7 @@ namespace CosmoResearch.Services
 
                 var nodeType = ToNodeType(message.DataType);
 
-                var nodeEntity = new NodeEntity(message.Path, message.Key) 
+                var nodeEntity = new DataEntity(message.Path, message.Key) 
                 {
                     DoubleData = message.Double32Data.ToArray(),
                     IntData = message.Int32Data.ToArray(),
@@ -53,16 +53,16 @@ namespace CosmoResearch.Services
             };
         }
 
-        private static NodeType ToNodeType(DataDType dType) {
+        private static DataType ToNodeType(DataDType dType) {
             switch (dType) {
                 case DataDType.Double:
-                    return NodeType.Double;
+                    return DataType.Double;
                 case DataDType.Int32:
-                    return NodeType.Int32;
+                    return DataType.Int32;
                 case DataDType.Int64:
-                    return NodeType.Int64;
+                    return DataType.Int64;
                 default:
-                    return NodeType.String;
+                    return DataType.String;
             }
         }
     }

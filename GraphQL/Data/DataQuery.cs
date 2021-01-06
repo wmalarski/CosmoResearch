@@ -4,17 +4,17 @@ using HotChocolate.Types;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CosmoResearch.GraphQL.Node
+namespace CosmoResearch.GraphQL.Data
 {
     [ExtendObjectType(Name = "Query")]
-    public class NodeQuery
+    public class DataQuery
     {
-        public Task<NodeEntity> GetNodeAsync(
+        public Task<DataEntity> GetNodeAsync(
             string path,
             string key,
             CancellationToken cancellationToken,
-            [DataLoader] NodeByKeyDataLoader nodeDataLoader
+            [DataLoader] DataByKeyDataLoader nodeDataLoader
         ) =>
-            nodeDataLoader.LoadAsync(new NodeKey(path, key), cancellationToken);
+            nodeDataLoader.LoadAsync(new DataKey(path, key), cancellationToken);
     }
 }

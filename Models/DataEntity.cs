@@ -3,7 +3,7 @@ using Microsoft.Azure.Cosmos.Table;
 namespace CosmoResearch.Models
 {
     
-    public enum NodeType 
+    public enum DataType 
     {
         String = 0,
         Int32 = 1,
@@ -11,19 +11,19 @@ namespace CosmoResearch.Models
         Double = 3,
     }
 
-    public record NodeKey(
+    public record DataKey(
         string path, 
         string key
     );
     
-    public class NodeEntity: TableEntity
+    public class DataEntity: TableEntity
     {
 
-        public NodeEntity()
+        public DataEntity()
         {
         }
 
-        public NodeEntity(string path, string key)
+        public DataEntity(string path, string key)
         {
             PartitionKey = path;
             RowKey = key;
@@ -31,7 +31,7 @@ namespace CosmoResearch.Models
 
         public uint[] Size { get; set; }
 
-        public NodeType Type { get; set; }
+        public DataType Type { get; set; }
 
         public string[] StringData { get; set; }
 

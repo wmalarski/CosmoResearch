@@ -7,26 +7,26 @@ using CosmoResearch.Services;
 using GreenDonut;
 using HotChocolate.DataLoader;
 
-namespace CosmoResearch.GraphQL.Node
+namespace CosmoResearch.GraphQL.Data
 {    
-    public class NodeByKeyDataLoader : BatchDataLoader<NodeKey, NodeEntity>
+    public class DataByKeyDataLoader : BatchDataLoader<DataKey, DataEntity>
     {
-        private readonly TableService _tableService;
+        private readonly DataService _tableService;
 
-        public NodeByKeyDataLoader(
+        public DataByKeyDataLoader(
             IBatchScheduler batchScheduler,
-            TableService tableService)
+            DataService tableService)
             : base(batchScheduler)
         {
             _tableService = tableService;
         }
 
-        protected override async Task<IReadOnlyDictionary<NodeKey, NodeEntity>> LoadBatchAsync(
-            IReadOnlyList<NodeKey> keys,
+        protected override async Task<IReadOnlyDictionary<DataKey, DataEntity>> LoadBatchAsync(
+            IReadOnlyList<DataKey> keys,
             CancellationToken cancellationToken)
         {
             var nodes = await _tableService.RetrieveAsync(keys);
-            return nodes.ToDictionary(node => new NodeKey(node.PartitionKey, node.RowKey));
+            return nodes.ToDictionary(node => new DataKey(node.PartitionKey, node.RowKey));
         }
     }
 }
