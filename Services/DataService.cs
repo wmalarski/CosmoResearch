@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CosmoResearch.Models;
+using CosmoResearch.Settings;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace CosmoResearch.Services
@@ -12,9 +13,9 @@ namespace CosmoResearch.Services
 
         private readonly CloudTable _cloudTable;
 
-        public DataService(CloudTable cloudTable)
+        public DataService(IDatabaseSettings databaseSettings)
         {
-            _cloudTable = cloudTable;
+            _cloudTable = DatabaseUtils.CreateTable(databaseSettings.ConnectionString, databaseSettings.DatabaseName);
         }
 
         public async Task<DataEntity> InsertOrMergeEntityAsync(DataEntity entity)
@@ -24,41 +25,30 @@ namespace CosmoResearch.Services
                 throw new ArgumentNullException("entity");
             }
 
-            // Create the InsertOrReplace table operation
             TableOperation insertOrMergeOperation = TableOperation.InsertOrMerge(entity);
-
-            // Execute the operation.
             TableResult result = await _cloudTable.ExecuteAsync(insertOrMergeOperation);
-            DataEntity insertedNode = result.Result as DataEntity;
-
-            if (result.RequestCharge.HasValue)
-            {
-                Console.WriteLine("Request Charge of InsertOrMerge Operation: " + result.RequestCharge);
-            }
-
-            return insertedNode;
-
+            return result.Result as DataEntity;
         }
 
-        public async Task<DataEntity> RetrieveAsync(DataKey key)
+        public async Task<DataEntity> RetrieveAsync(DataKeyPair pair)
         {
             var result = await _cloudTable.ExecuteAsync(
-                TableOperation.Retrieve<DataEntity>(key.path, key.key)
+                TableOperation.Retrieve<DataEntity>(pair.path, pair.key)
             );
             
             return result.Result as DataEntity;
         }
 
-        public async Task<IEnumerable<DataEntity>> RetrieveAsync(IReadOnlyList<DataKey> keys)
+        public async Task<IEnumerable<DataEntity>> RetrieveAsync(IReadOnlyList<DataKeyPair> pairs)
         {
-            var batchOperation = new TableBatchOperation();
+            var operation = new TableBatchOperation();
 
-            foreach (var key in keys)
+            foreach (var pair in pairs)
             {
-                batchOperation.Retrieve<DataEntity>(key.path, key.key);
+                operation.Retrieve<DataEntity>(pair.path, pair.key);
             };
 
-            var results = await _cloudTable.ExecuteBatchAsync(batchOperation);
+            var results = await _cloudTable.ExecuteBatchAsync(operation);
 
             return results.Select(result => result.Result as DataEntity);
         }
@@ -70,13 +60,7 @@ namespace CosmoResearch.Services
                 throw new ArgumentNullException("deleteEntity");
             }
 
-            TableOperation deleteOperation = TableOperation.Delete(deleteEntity);
-            TableResult result = await _cloudTable.ExecuteAsync(deleteOperation);
-
-            if (result.RequestCharge.HasValue)
-            {
-                Console.WriteLine("Request Charge of Delete Operation: " + result.RequestCharge);
-            }
+            await _cloudTable.ExecuteAsync(TableOperation.Delete(deleteEntity));
         }
     }
 }

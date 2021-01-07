@@ -1,19 +1,16 @@
 using System;
-using System.Threading.Tasks;
-using CosmoResearch.Settings;
 using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CosmoResearch.Services 
 {
     public static class DatabaseUtils 
     {
-        public static CloudStorageAccount CreateAzureStorageAccount(IDatabaseSettings databaseSettings)
+        public static CloudStorageAccount CreateAzureStorageAccount(string connectionString)
         {
             CloudStorageAccount storageAccount;
             try
             {
-                storageAccount = CloudStorageAccount.Parse(databaseSettings.ConnectionString);
+                storageAccount = CloudStorageAccount.Parse(connectionString);
             }
             catch (FormatException)
             {
@@ -30,10 +27,10 @@ namespace CosmoResearch.Services
             return storageAccount;
         }
 
-        public static CloudTable CreateTable(IDatabaseSettings databaseSettings)
+        public static CloudTable CreateTable(string connectionString, string databaseName)
         {
             // Retrieve storage account information from connection string.
-            CloudStorageAccount storageAccount = CreateAzureStorageAccount(databaseSettings);
+            CloudStorageAccount storageAccount = CreateAzureStorageAccount(connectionString);
 
             // Create a table client for interacting with the table service
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient(new TableClientConfiguration());
@@ -41,14 +38,14 @@ namespace CosmoResearch.Services
             Console.WriteLine("Create a Table for the demo");
 
             // Create a table client for interacting with the table service 
-            CloudTable table = tableClient.GetTableReference(databaseSettings.DatabaseName);
+            CloudTable table = tableClient.GetTableReference(databaseName);
             if (table.CreateIfNotExists())
             {
-                Console.WriteLine("Created Table named: {0}", databaseSettings.DatabaseName);
+                Console.WriteLine("Created Table named: {0}", databaseName);
             }
             else
             {
-                Console.WriteLine("Table {0} already exists", databaseSettings.DatabaseName);
+                Console.WriteLine("Table {0} already exists", databaseName);
             }
 
             Console.WriteLine();

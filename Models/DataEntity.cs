@@ -11,7 +11,7 @@ namespace CosmoResearch.Models
         Double = 3,
     }
 
-    public record DataKey(
+    public record DataKeyPair(
         string path, 
         string key
     );
@@ -23,10 +23,10 @@ namespace CosmoResearch.Models
         {
         }
 
-        public DataEntity(string path, string key)
+        public DataEntity(DataKeyPair pair)
         {
-            PartitionKey = path;
-            RowKey = key;
+            PartitionKey = pair.path;
+            RowKey = pair.key;
         }
 
         public int[] Size { get; set; }

@@ -6,7 +6,6 @@ using CosmoResearch.Services;
 using CosmoResearch.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Microsoft.Azure.Cosmos.Table;
 using CosmoResearch.GraphQL.Data;
 using HotChocolate.Types.Descriptors;
 using CosmoResearch.GraphQL.Common;
@@ -26,9 +25,11 @@ namespace CosmoResearch
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureTableDb(services);
+            ConfigureTableSettings(services);
 
             services.AddSingleton<DataService>();
+
+            services.AddSingleton<PartitionService>();
 
             services.AddSingleton<ITypeInspector, InheritanceAwareTypeInspector>();
 
@@ -61,7 +62,7 @@ namespace CosmoResearch
             });
         }
 
-        private void ConfigureTableDb(IServiceCollection services) 
+        private void ConfigureTableSettings(IServiceCollection services) 
         {
             var section = Configuration.GetSection(nameof(DatabaseSettings));
 
@@ -69,12 +70,7 @@ namespace CosmoResearch
             
             services.AddSingleton<IDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value
-            );
-
-            services.AddSingleton<CloudTable>(sp => 
-                DatabaseUtils.CreateTable(section.Get<DatabaseSettings>())
-            );
-            
+            );            
         }
     }
 }

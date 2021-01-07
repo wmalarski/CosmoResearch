@@ -9,7 +9,7 @@ using HotChocolate.DataLoader;
 
 namespace CosmoResearch.GraphQL.Data
 {    
-    public class DataByKeyDataLoader : BatchDataLoader<DataKey, DataEntity>
+    public class DataByKeyDataLoader : BatchDataLoader<DataKeyPair, DataEntity>
     {
         private readonly DataService _tableService;
 
@@ -21,12 +21,12 @@ namespace CosmoResearch.GraphQL.Data
             _tableService = tableService;
         }
 
-        protected override async Task<IReadOnlyDictionary<DataKey, DataEntity>> LoadBatchAsync(
-            IReadOnlyList<DataKey> keys,
+        protected override async Task<IReadOnlyDictionary<DataKeyPair, DataEntity>> LoadBatchAsync(
+            IReadOnlyList<DataKeyPair> pairs,
             CancellationToken cancellationToken)
         {
-            var nodes = await _tableService.RetrieveAsync(keys);
-            return nodes.ToDictionary(node => new DataKey(node.PartitionKey, node.RowKey));
+            var nodes = await _tableService.RetrieveAsync(pairs);
+            return nodes.ToDictionary(node => new DataKeyPair(node.PartitionKey, node.RowKey));
         }
     }
 }

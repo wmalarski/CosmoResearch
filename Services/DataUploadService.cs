@@ -32,7 +32,9 @@ namespace CosmoResearch.Services
 
                 var nodeType = ToNodeType(message.DataType);
 
-                var nodeEntity = new DataEntity(message.Path, message.Key) 
+                var pair = new DataKeyPair(message.Path, message.Key);
+
+                var nodeEntity = new DataEntity(pair) 
                 {
                     DoubleData = message.Double32Data.ToArray(),
                     IntData = message.Int32Data.ToArray(),

@@ -15,6 +15,6 @@ namespace CosmoResearch.GraphQL.Data
             CancellationToken cancellationToken,
             [DataLoader] DataByKeyDataLoader nodeDataLoader
         ) =>
-            nodeDataLoader.LoadAsync(new DataKey(path, key), cancellationToken);
+            nodeDataLoader.LoadAsync(new DataKeyPair(path, key), cancellationToken);
     }
 }
