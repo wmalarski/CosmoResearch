@@ -14,10 +14,16 @@ namespace CosmoResearch.Services
 
         private readonly DataService _tableService;
 
-        public DataUploadService(ILogger<DataUploadService> logger, DataService tableService)
+        private readonly PartitionService _partitionService;
+
+        public DataUploadService(
+            ILogger<DataUploadService> logger, 
+            DataService tableService,
+            PartitionService partitionService)
         {
             _logger = logger;
             _tableService = tableService;
+            _partitionService = partitionService;
         }
 
         public override async Task<DataReply> SendData(
@@ -25,6 +31,7 @@ namespace CosmoResearch.Services
             ServerCallContext context)
         {
             var taskList = new List<Task<DataEntity>>();
+            var paths = new HashSet<string>();
 
             while (await requestStream.MoveNext())
             {
@@ -45,9 +52,21 @@ namespace CosmoResearch.Services
                 };
 
                 taskList.Add(_tableService.InsertOrMergeEntityAsync(nodeEntity));
+
+                paths.Add(message.Path);
             }
 
+            var partitionTasks = paths.Select(path =>
+            {
+                var pair = new PartitionKeyPair(_tableService.TableKey, path);
+
+                var partition = new PartitionEntity(pair);
+
+                return _partitionService.InsertOrMergeAsync(partition);
+            });
+
             await Task.WhenAll(taskList);
+            await Task.WhenAll(partitionTasks);
 
             return new DataReply
             {

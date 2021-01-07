@@ -11,7 +11,6 @@ namespace CosmoResearch.Services
     public class PartitionService
     {
 
-
         private readonly CloudTable _partitionTable;
 
         public PartitionService(IDatabaseSettings databaseSettings)
