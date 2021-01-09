@@ -58,9 +58,7 @@ namespace CosmoResearch.Services
 
             var partitionTasks = paths.Select(path =>
             {
-                var pair = new PartitionKeyPair(_tableService.TableKey, path);
-
-                var partition = new PartitionEntity(pair);
+                var partition = new PartitionEntity(path);
 
                 return _partitionService.InsertOrMergeAsync(partition);
             });

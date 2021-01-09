@@ -12,10 +12,12 @@ namespace CosmoResearch.Services
     {
 
         private readonly CloudTable _partitionTable;
+        private readonly IDatabaseSettings _databaseSettings;
 
         public PartitionService(IDatabaseSettings databaseSettings)
         {
             _partitionTable = DatabaseUtils.CreateTable(databaseSettings.ConnectionString, databaseSettings.PartitionDatabaseName);
+            _databaseSettings = databaseSettings;
         }
 
         public async Task<PartitionEntity> InsertOrMergeAsync(PartitionEntity entity)
@@ -24,26 +26,27 @@ namespace CosmoResearch.Services
             {
                 throw new ArgumentNullException("entity");
             }
+            entity.PartitionKey = _databaseSettings.DatabaseName;
             TableOperation operation = TableOperation.InsertOrMerge(entity);
             TableResult result = await _partitionTable.ExecuteAsync(operation);
             return result.Result as PartitionEntity;
         }
 
-        public async Task<PartitionEntity> RetrieveAsync(PartitionKeyPair pair)
+        public async Task<PartitionEntity> RetrieveAsync(string path)
         {
             var result = await _partitionTable.ExecuteAsync(
-                TableOperation.Retrieve<PartitionEntity>(pair.table, pair.path)
+                TableOperation.Retrieve<PartitionEntity>(_databaseSettings.DatabaseName, path)
             );
             return result.Result as PartitionEntity;
         }
 
-        public async Task<IEnumerable<PartitionEntity>> RetrieveAsync(IReadOnlyList<PartitionKeyPair> pairs)
+        public async Task<IEnumerable<PartitionEntity>> RetrieveAsync(IReadOnlyList<string> paths)
         {
             var operation = new TableBatchOperation();
 
-            foreach (var pair in pairs)
+            foreach (var path in paths)
             {
-                operation.Retrieve<PartitionEntity>(pair.table, pair.path);
+                operation.Retrieve<PartitionEntity>(_databaseSettings.DatabaseName, path);
             };
 
             var results = await _partitionTable.ExecuteBatchAsync(operation);

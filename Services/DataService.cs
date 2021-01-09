@@ -13,12 +13,9 @@ namespace CosmoResearch.Services
 
         private readonly CloudTable _cloudTable;
 
-        public readonly string TableKey;
-
         public DataService(IDatabaseSettings databaseSettings)
         {
-            TableKey = databaseSettings.DatabaseName;
-            _cloudTable = DatabaseUtils.CreateTable(databaseSettings.ConnectionString, TableKey);
+            _cloudTable = DatabaseUtils.CreateTable(databaseSettings.ConnectionString, databaseSettings.DatabaseName);
         }
 
         public async Task<DataEntity> InsertOrMergeEntityAsync(DataEntity entity)

@@ -9,7 +9,7 @@ using HotChocolate.DataLoader;
 
 namespace CosmoResearch.GraphQL.Partition
 {    
-    public class PartitionByKeyDataLoader : BatchDataLoader<PartitionKeyPair, PartitionEntity>
+    public class PartitionByKeyDataLoader : BatchDataLoader<string, PartitionEntity>
     {
         private readonly PartitionService _partitionService;
 
@@ -21,12 +21,12 @@ namespace CosmoResearch.GraphQL.Partition
             _partitionService = partitionService;
         }
 
-        protected override async Task<IReadOnlyDictionary<PartitionKeyPair, PartitionEntity>> LoadBatchAsync(
-            IReadOnlyList<PartitionKeyPair> pairs,
+        protected override async Task<IReadOnlyDictionary<string, PartitionEntity>> LoadBatchAsync(
+            IReadOnlyList<string> paths,
             CancellationToken cancellationToken)
         {
-            var nodes = await _partitionService.RetrieveAsync(pairs);
-            return nodes.ToDictionary(node => new PartitionKeyPair(node.PartitionKey, node.RowKey));
+            var nodes = await _partitionService.RetrieveAsync(paths);
+            return nodes.ToDictionary(node => node.RowKey);
         }
     }
 }

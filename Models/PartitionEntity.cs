@@ -3,11 +3,6 @@ using Microsoft.Azure.Cosmos.Table;
 namespace CosmoResearch.Models
 {
 
-    public record PartitionKeyPair(
-        string table, 
-        string path
-    );
-
     public class PartitionEntity: TableEntity
     {
 
@@ -15,10 +10,9 @@ namespace CosmoResearch.Models
         {
         }
 
-        public PartitionEntity(PartitionKeyPair pair)
+        public PartitionEntity(string path)
         {
-            PartitionKey = pair.table;
-            RowKey = pair.path;
+            RowKey = path;
         }
 
         public string[] VideoUrls { get; set; }
