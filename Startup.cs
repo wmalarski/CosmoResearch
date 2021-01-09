@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using CosmoResearch.GraphQL.Data;
 using HotChocolate.Types.Descriptors;
 using CosmoResearch.GraphQL.Common;
+using CosmoResearch.GraphQL.Partition;
 
 namespace CosmoResearch
 {
@@ -36,9 +37,12 @@ namespace CosmoResearch
             services
                 .AddGraphQLServer()
                 .AddQueryType(d => d.Name("Query"))
-                    .AddTypeExtension<DataQuery>()
+                .AddTypeExtension<DataQuery>()
+                .AddTypeExtension<PartitionQuery>()
                 .AddDataLoader<DataByKeyDataLoader>()
-                .AddType<DataType>();
+                .AddDataLoader<PartitionByKeyDataLoader>()
+                .AddType<DataType>()
+                .AddType<PartitionType>();
 
             services.AddGrpc();
         }
