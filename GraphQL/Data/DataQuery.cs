@@ -9,7 +9,7 @@ namespace CosmoResearch.GraphQL.Data
     [ExtendObjectType(Name = "Query")]
     public class DataQuery
     {
-        public Task<DataEntity> GetNodeAsync(
+        public Task<DataEntity> GetDataAsync(
             string path,
             string key,
             CancellationToken cancellationToken,

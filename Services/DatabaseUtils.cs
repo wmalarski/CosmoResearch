@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using Microsoft.Azure.Cosmos.Table;
 
 namespace CosmoResearch.Services 
@@ -50,6 +52,15 @@ namespace CosmoResearch.Services
 
             Console.WriteLine();
             return table;
+        }
+
+        public static string CreateSearchFilter(IEnumerable<string> paths) 
+        {
+            var condition = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.LessThan, paths.First());
+
+            return paths.Count() == 1 ? 
+                condition : 
+                TableQuery.CombineFilters(condition, TableOperators.Or, CreateSearchFilter(paths.Skip(1)));
         }
     }
 }

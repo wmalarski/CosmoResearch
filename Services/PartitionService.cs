@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CosmoResearch.Models;
 using CosmoResearch.Settings;
@@ -52,6 +53,28 @@ namespace CosmoResearch.Services
             var results = await _partitionTable.ExecuteBatchAsync(operation);
 
             return results.Select(result => result.Result as PartitionEntity);
+        }
+
+        public async Task<IEnumerable<PartitionEntity>> SearchAsync(string path, CancellationToken cancellationToken)
+        {
+            // https://github.com/Azure-Samples/azure-cosmos-table-dotnet-core-getting-started/blob/main/CosmosTableSamples/AdvancedSamples.cs
+            var condition = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.LessThan, path);
+            var query = _partitionTable.CreateQuery<PartitionEntity>().Where(condition);
+            query.TakeCount = 50;
+
+            var results = new List<PartitionEntity>();
+            TableContinuationToken token = null;
+
+            do
+            {
+                var segment = await _partitionTable.ExecuteQuerySegmentedAsync(query, token, cancellationToken);
+                results.AddRange(segment.Results);
+
+                token = segment.ContinuationToken;
+            }
+            while(token != null);
+
+            return results;
         }
 
         public async Task DeleteAsync(PartitionEntity entity)
