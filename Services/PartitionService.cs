@@ -58,8 +58,8 @@ namespace CosmoResearch.Services
         public async Task<IEnumerable<PartitionEntity>> SearchAsync(string path, CancellationToken cancellationToken)
         {
             // https://github.com/Azure-Samples/azure-cosmos-table-dotnet-core-getting-started/blob/main/CosmosTableSamples/AdvancedSamples.cs
-            var condition = TableQuery.GenerateFilterCondition("RowKey", QueryComparisons.LessThan, path);
-            var query = _partitionTable.CreateQuery<PartitionEntity>().Where(condition);
+            var condition = DatabaseUtils.GenerateStartsWithFilterCondition("RowKey", path);
+            var query = new TableQuery<PartitionEntity>().Where(condition);
             query.TakeCount = 50;
 
             var results = new List<PartitionEntity>();
